@@ -40,7 +40,7 @@ public class JobPostingService {
 
         User employer = employerOptional.get();
 
-        if (employer.getRole() != Role.EMPLOYER && employer.getRole() != Role.ADMIN) {
+        if (employer.getRole() != Role.EMPLOYER) {
             return Optional.empty();
         }
 

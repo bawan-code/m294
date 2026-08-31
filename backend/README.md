@@ -37,8 +37,22 @@ Die Create-Endpoints nehmen den handelnden Benutzer nicht mehr aus dem Request-B
 | `POST /api/job-applications` | `jobSeekerId` im Body | aus dem Token |
 | `POST /api/saved-jobs` | `userId` im Body | aus dem Token |
 
-`POST /api/job-postings` akzeptiert neu auch die Rolle ADMIN (vorher liess `SecurityConfig`
-ADMIN durch, der Service wies ihn danach still mit 404 ab).
+### Rolle ADMIN
+
+Administratoren werden **ausschliesslich direkt in Keycloak** angelegt, nie über
+`POST /api/auth/register`. Sie haben deshalb bewusst **keinen Datensatz in der lokalen
+Datenbank**, und `GET /api/users/me` liefert für sie 404.
+
+Daraus folgt:
+
+- `POST /api/job-postings` ist auf EMPLOYER beschränkt. Ein Inserat braucht ein
+  `employer_id` mit Fremdschlüssel auf `users` — ein ADMIN hat dort keine Zeile.
+- `PUT` und `DELETE` auf Inserate bleiben für ADMIN erlaubt (Moderation), sie brauchen
+  keinen lokalen Benutzer.
+- Dem ADMIN stehen die globalen Endpoints offen: `GET /api/users`,
+  `DELETE /api/users/{id}`, `GET /api/job-applications`, `GET /api/saved-jobs` und
+  `PATCH /api/job-applications/{id}/status`.
+- Benutzerbezogene Endpoints (`/api/users/{userId}/...`) sind für ADMIN gegenstandslos.
 
 ### CSRF
 

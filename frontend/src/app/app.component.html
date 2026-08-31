@@ -36,33 +36,30 @@
         </button>
       </div>
 
-      <div *appIsInRole="'ADMIN'">
-        <button [routerLink]="['my-job-postings']" color="primary" mat-button>
-          <mat-icon>business_center</mat-icon>&nbsp;Meine Inserate
-        </button>
-      </div>
-      <div *appIsInRole="'ADMIN'">
-        <button [routerLink]="['my-applications']" color="primary" mat-button>
-          <mat-icon>assignment</mat-icon>&nbsp;Meine Bewerbungen
-        </button>
-      </div>
-      <div *appIsInRole="'ADMIN'">
-        <button [routerLink]="['saved-jobs']" color="primary" mat-button>
-          <mat-icon>bookmark</mat-icon>&nbsp;Gemerkte Jobs
-        </button>
-      </div>
+      <!--
+        Der ADMIN existiert nur in Keycloak und hat keinen lokalen Datensatz.
+        Ihm werden deshalb ausschliesslich globale Ansichten angeboten,
+        keine benutzerbezogenen Seiten.
+      -->
       <div *appIsInRole="'ADMIN'">
         <button [routerLink]="['users']" color="primary" mat-button>
           <mat-icon>group</mat-icon>&nbsp;Benutzer
         </button>
       </div>
 
+      <!-- Profil braucht die lokale userId, also nicht für ADMIN. -->
+      <div *appIsInRole="'EMPLOYER'">
+        <button [routerLink]="['profile']" color="primary" mat-button>
+          <mat-icon>person</mat-icon>&nbsp;Profil
+        </button>
+      </div>
+      <div *appIsInRole="'JOB_SEEKER'">
+        <button [routerLink]="['profile']" color="primary" mat-button>
+          <mat-icon>person</mat-icon>&nbsp;Profil
+        </button>
+      </div>
+
       @if (useralias() !== '') {
-        <div>
-          <button [routerLink]="['profile']" color="primary" mat-button>
-            <mat-icon>person</mat-icon>&nbsp;Profil
-          </button>
-        </div>
         <div style="margin-top: 50px">
           <button (click)="logout()" color="warn" mat-button type="button">
             <mat-icon>logout</mat-icon>&nbsp;Abmelden

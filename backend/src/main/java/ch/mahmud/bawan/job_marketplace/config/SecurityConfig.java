@@ -72,7 +72,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("ADMIN", "JOB_SEEKER", "EMPLOYER")
 
                         // Job postings
-                        .requestMatchers(HttpMethod.POST, "/api/job-postings").hasAnyRole("EMPLOYER", "ADMIN")
+                        // Nur EMPLOYER: Beim Anlegen wird der Arbeitgeber aus dem Token
+                        // aufgelöst, ein ADMIN existiert aber nur in Keycloak und hat
+                        // keinen lokalen Datensatz, auf den employer_id verweisen könnte.
+                        // Bearbeiten und Löschen bleiben für ADMIN als Moderation erlaubt.
+                        .requestMatchers(HttpMethod.POST, "/api/job-postings").hasRole("EMPLOYER")
                         .requestMatchers(HttpMethod.PUT, "/api/job-postings/**").hasAnyRole("EMPLOYER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/job-postings/**").hasAnyRole("EMPLOYER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/*/job-postings").hasAnyRole("EMPLOYER", "ADMIN")

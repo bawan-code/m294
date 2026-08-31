@@ -16,13 +16,15 @@ export const routes: Routes = [
   { path: 'jobs', component: JobListComponent },
   { path: 'jobs/:id', component: JobDetailComponent, pathMatch: 'full' },
 
+  // Benutzerbezogen: nur JOB_SEEKER. Ein ADMIN hat keine lokale userId,
+  // die Seiten blieben für ihn leer.
   {
     path: 'my-applications', component: MyApplicationsComponent, canActivate: [appCanActivate],
-    data: { roles: [AppRoles.JobSeeker, AppRoles.Admin] }
+    data: { roles: [AppRoles.JobSeeker] }
   },
   {
     path: 'saved-jobs', component: SavedJobsComponent, canActivate: [appCanActivate],
-    data: { roles: [AppRoles.JobSeeker, AppRoles.Admin] }
+    data: { roles: [AppRoles.JobSeeker] }
   },
 
   { path: 'noaccess', component: NoAccessComponent },
