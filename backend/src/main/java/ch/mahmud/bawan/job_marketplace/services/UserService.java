@@ -4,6 +4,7 @@ import ch.mahmud.bawan.job_marketplace.dtos.UserResponseDto;
 import ch.mahmud.bawan.job_marketplace.dtos.UserUpdateRequestDto;
 import ch.mahmud.bawan.job_marketplace.models.User;
 import ch.mahmud.bawan.job_marketplace.repositories.UserRepository;
+import ch.mahmud.bawan.job_marketplace.security.CurrentUserService;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,13 +18,24 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final Keycloak keycloak;
+    private final CurrentUserService currentUserService;
 
     @Value("${keycloak.realm}")
     private String realm;
 
-    public UserService(UserRepository userRepository, Keycloak keycloak) {
+    public UserService(
+            UserRepository userRepository,
+            Keycloak keycloak,
+            CurrentUserService currentUserService
+    ) {
         this.userRepository = userRepository;
         this.keycloak = keycloak;
+        this.currentUserService = currentUserService;
+    }
+
+    public Optional<UserResponseDto> getCurrentUser() {
+        return currentUserService.getCurrentUser()
+                .map(this::mapToUserResponseDto);
     }
 
     public List<UserResponseDto> getAllUsers() {

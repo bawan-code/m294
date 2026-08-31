@@ -6,9 +6,6 @@ import lombok.Data;
 @Data
 public class JobApplicationCreateRequestDto {
 
-    @NotNull(message = "Job seeker ID is required")
-    private Integer jobSeekerId;
-
     @NotNull(message = "Job ID is required")
     private Integer jobId;
 }

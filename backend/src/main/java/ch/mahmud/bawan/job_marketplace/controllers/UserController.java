@@ -31,6 +31,22 @@ public class UserController {
         this.jobPostingService = jobPostingService;
     }
 
+    @Operation(
+            summary = "Get current user",
+            description = "Returns the locally stored user belonging to the authenticated Keycloak account. "
+                    + "The frontend needs this to learn its own numeric userId after login."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Current user successfully returned"),
+            @ApiResponse(responseCode = "404", description = "No local user exists for this Keycloak account")
+    })
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> me() {
+        return userService.getCurrentUser()
+                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @Operation(summary = "Get all users", description = "Returns a list of all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users successfully returned")

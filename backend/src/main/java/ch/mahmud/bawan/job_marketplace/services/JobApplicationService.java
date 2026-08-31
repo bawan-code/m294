@@ -11,6 +11,7 @@ import ch.mahmud.bawan.job_marketplace.models.User;
 import ch.mahmud.bawan.job_marketplace.repositories.JobApplicationRepository;
 import ch.mahmud.bawan.job_marketplace.repositories.JobPostingRepository;
 import ch.mahmud.bawan.job_marketplace.repositories.UserRepository;
+import ch.mahmud.bawan.job_marketplace.security.CurrentUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,19 +23,22 @@ public class JobApplicationService {
     private final JobApplicationRepository jobApplicationRepository;
     private final UserRepository userRepository;
     private final JobPostingRepository jobPostingRepository;
+    private final CurrentUserService currentUserService;
 
     public JobApplicationService(
             JobApplicationRepository jobApplicationRepository,
             UserRepository userRepository,
-            JobPostingRepository jobPostingRepository
+            JobPostingRepository jobPostingRepository,
+            CurrentUserService currentUserService
     ) {
         this.jobApplicationRepository = jobApplicationRepository;
         this.userRepository = userRepository;
         this.jobPostingRepository = jobPostingRepository;
+        this.currentUserService = currentUserService;
     }
 
     public Optional<JobApplicationResponseDto> createJobApplication(JobApplicationCreateRequestDto request) {
-        Optional<User> jobSeekerOptional = userRepository.findById(request.getJobSeekerId());
+        Optional<User> jobSeekerOptional = currentUserService.getCurrentUser();
         Optional<JobPosting> jobPostingOptional = jobPostingRepository.findById(request.getJobId());
 
         if (jobSeekerOptional.isEmpty() || jobPostingOptional.isEmpty()) {

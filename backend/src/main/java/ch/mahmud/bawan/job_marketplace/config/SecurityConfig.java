@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -35,7 +36,15 @@ public class SecurityConfig {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName(null);
         http
-                .csrf(csrf -> csrf.disable())
+                // XSRF-Token als lesbares Cookie, damit das Angular-Frontend es
+                // als X-XSRF-TOKEN Header zurücksenden kann.
+                // Die Auth-Endpoints sind ausgenommen, damit Registrierung und Login
+                // weiterhin direkt (z.B. über Swagger UI) aufrufbar bleiben.
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(requestHandler)
+                        .ignoringRequestMatchers("/api/auth/register", "/api/auth/login")
+                )
 
                 .authorizeHttpRequests(auth -> auth
                         // Swagger / OpenAPI
@@ -48,6 +57,9 @@ public class SecurityConfig {
                         // Public job browsing
                         .requestMatchers(HttpMethod.GET, "/api/job-postings").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/job-postings/*").permitAll()
+
+                        // Eigenes Profil (jede angemeldete Rolle)
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("ADMIN", "EMPLOYER", "JOB_SEEKER")
 
                         // Admin
                         .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")

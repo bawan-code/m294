@@ -1,7 +1,6 @@
 package ch.mahmud.bawan.job_marketplace.dtos;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -17,7 +16,4 @@ public class JobPostingCreateRequestDto {
     private String location;
 
     private String salaryRange;
-
-    @NotNull(message = "Employer ID is required")
-    private Integer employerId;
 }

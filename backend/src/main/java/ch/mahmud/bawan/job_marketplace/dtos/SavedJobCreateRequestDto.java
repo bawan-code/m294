@@ -6,9 +6,6 @@ import lombok.Data;
 @Data
 public class SavedJobCreateRequestDto {
 
-    @NotNull(message = "User ID is required")
-    private Integer userId;
-
     @NotNull(message = "Job ID is required")
     private Integer jobId;
 }

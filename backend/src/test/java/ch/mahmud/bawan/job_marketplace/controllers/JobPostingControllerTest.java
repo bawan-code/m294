@@ -50,7 +50,6 @@ class JobPostingControllerTest {
         request.setDescription("Spring Boot backend developer");
         request.setLocation("Basel");
         request.setSalaryRange("80000-100000 CHF");
-        request.setEmployerId(1);
 
         JobPostingResponseDto response = createJobPostingResponseDto();
 
@@ -78,7 +77,6 @@ class JobPostingControllerTest {
         request.setDescription("Spring Boot backend developer");
         request.setLocation("Basel");
         request.setSalaryRange("80000-100000 CHF");
-        request.setEmployerId(999);
 
         Mockito.when(jobPostingService.createJobPosting(any(JobPostingCreateRequestDto.class)))
                 .thenReturn(Optional.empty());
@@ -190,29 +188,8 @@ class JobPostingControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void getByUserId_shouldReturnJobPostings_whenUserExists() throws Exception {
-        JobPostingResponseDto response = createJobPostingResponseDto();
-
-        Mockito.when(jobPostingService.getJobPostingsByUserId(1))
-                .thenReturn(Optional.of(List.of(response)));
-
-        mockMvc.perform(get("/api/job-postings/users/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].jobId").value(1))
-                .andExpect(jsonPath("$[0].employerId").value(1))
-                .andExpect(jsonPath("$[0].employerName").value("Test Employer"));
-    }
-
-    @Test
-    void getByUserId_shouldReturnNotFound_whenUserDoesNotExist() throws Exception {
-        Mockito.when(jobPostingService.getJobPostingsByUserId(999))
-                .thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/job-postings/users/999"))
-                .andExpect(status().isNotFound());
-    }
+    // Hinweis: Die Stellen eines Arbeitgebers liegen unter GET /api/users/{userId}/job-postings
+    // und damit auf dem UserController. Getestet wird das in UserControllerTest.
 
     private JobPostingResponseDto createJobPostingResponseDto() {
         JobPostingResponseDto dto = new JobPostingResponseDto();
