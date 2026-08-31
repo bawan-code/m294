@@ -1,0 +1,11 @@
+@if (useralias() !== '') {
+  <div style="font-weight: bold">
+    Willkommen {{ username() }} ({{ useralias() }})!
+  </div>
+}
+
+@if (useralias() === '') {
+  <div>
+    <app-login></app-login>
+  </div>
+}

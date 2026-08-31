@@ -1,0 +1,78 @@
+<div style="height: 100%; overflow: hidden">
+  <div style="vertical-align: middle">
+    <button (click)="drawer.toggle()" color="primary" mat-icon-button type="button">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <app-header></app-header>
+  </div>
+
+  <mat-drawer-container class="jobapp-container">
+    <mat-drawer #drawer [opened]="true" class="jobapp-sidenav" mode="side">
+      <div>
+        <button [routerLink]="['dashboard']" color="primary" mat-button>
+          <mat-icon>dashboard</mat-icon>&nbsp;Dashboard
+        </button>
+      </div>
+      <div>
+        <button [routerLink]="['jobs']" color="primary" mat-button>
+          <mat-icon>work_outline</mat-icon>&nbsp;Stellen
+        </button>
+      </div>
+
+      <div *appIsInRole="'EMPLOYER'">
+        <button [routerLink]="['my-job-postings']" color="primary" mat-button>
+          <mat-icon>business_center</mat-icon>&nbsp;Meine Inserate
+        </button>
+      </div>
+
+      <div *appIsInRole="'JOB_SEEKER'">
+        <button [routerLink]="['my-applications']" color="primary" mat-button>
+          <mat-icon>assignment</mat-icon>&nbsp;Meine Bewerbungen
+        </button>
+      </div>
+      <div *appIsInRole="'JOB_SEEKER'">
+        <button [routerLink]="['saved-jobs']" color="primary" mat-button>
+          <mat-icon>bookmark</mat-icon>&nbsp;Gemerkte Jobs
+        </button>
+      </div>
+
+      <div *appIsInRole="'ADMIN'">
+        <button [routerLink]="['my-job-postings']" color="primary" mat-button>
+          <mat-icon>business_center</mat-icon>&nbsp;Meine Inserate
+        </button>
+      </div>
+      <div *appIsInRole="'ADMIN'">
+        <button [routerLink]="['my-applications']" color="primary" mat-button>
+          <mat-icon>assignment</mat-icon>&nbsp;Meine Bewerbungen
+        </button>
+      </div>
+      <div *appIsInRole="'ADMIN'">
+        <button [routerLink]="['saved-jobs']" color="primary" mat-button>
+          <mat-icon>bookmark</mat-icon>&nbsp;Gemerkte Jobs
+        </button>
+      </div>
+      <div *appIsInRole="'ADMIN'">
+        <button [routerLink]="['users']" color="primary" mat-button>
+          <mat-icon>group</mat-icon>&nbsp;Benutzer
+        </button>
+      </div>
+
+      @if (useralias() !== '') {
+        <div>
+          <button [routerLink]="['profile']" color="primary" mat-button>
+            <mat-icon>person</mat-icon>&nbsp;Profil
+          </button>
+        </div>
+        <div style="margin-top: 50px">
+          <button (click)="logout()" color="warn" mat-button type="button">
+            <mat-icon>logout</mat-icon>&nbsp;Abmelden
+          </button>
+        </div>
+      }
+    </mat-drawer>
+
+    <div class="jobapp-sidenav-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-container>
+</div>

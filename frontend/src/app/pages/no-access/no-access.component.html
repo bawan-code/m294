@@ -1,0 +1,9 @@
+<mat-icon color="warn" style="font-size: 200px; height: 200px; width: 200px">warning_amber</mat-icon>
+
+<div>Sie haben keinen Zugriff auf diese Seite.</div>
+
+@if (!oauthService.hasValidAccessToken()) {
+  <div style="margin-top: 20px">
+    <app-login></app-login>
+  </div>
+}
