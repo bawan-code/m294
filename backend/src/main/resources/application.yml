@@ -1,0 +1,27 @@
+server.port: 9090
+spring:
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/JobMarketplace
+    username: postgres
+    password: XrosBBZBL07
+    driverClassName: org.postgresql.Driver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/job-marketplace
+keycloak:
+  server-url: http://localhost:8080
+  realm: job-marketplace
+  admin-client-id: job-marketplace-admin
+  admin-client-secret: geU6al0TDXLbAxwGRzsdlwRX56uu3r8S
+  login-client-id: job-marketplace-api
+  login-client-secret: buY9EAGEXwCkClBirtvrFzD4YxyRoOXk
+logging:
+  level:
+    org.springframework.security: DEBUG
