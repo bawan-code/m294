@@ -39,5 +39,18 @@
       <mat-icon>bookmark_border</mat-icon>
       Job merken
     </button>
+
+    <button *appIsInRole="'EMPLOYER'" (click)="edit()" color="primary" mat-raised-button type="button">
+      <mat-icon>edit</mat-icon>
+      Bearbeiten
+    </button>
+    <button *appIsInRole="'EMPLOYER'" (click)="applications()" color="primary" mat-button type="button">
+      <mat-icon>assignment</mat-icon>
+      Bewerbungen ansehen
+    </button>
+    <button *appIsInRole="'EMPLOYER'" (click)="deleteJob()" color="warn" mat-button type="button">
+      <mat-icon>delete</mat-icon>
+      Löschen
+    </button>
   </div>
 </div>

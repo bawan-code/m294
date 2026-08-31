@@ -1,0 +1,32 @@
+<form (ngSubmit)="save(objForm.value)" [formGroup]="objForm" class="app-form">
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input #inputName appAutofocus formControlName="name" matInput maxlength="100" required>
+    <mat-hint align="end">{{ inputName.value.length || 0 }}/100</mat-hint>
+    @if (objForm.controls['name'].hasError('required')) {
+      <mat-error>Name ist erforderlich</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>E-Mail</mat-label>
+    <input #inputEmail formControlName="email" matInput maxlength="150" required type="email">
+    <mat-hint align="end">{{ inputEmail.value.length || 0 }}/150</mat-hint>
+    @if (objForm.controls['email'].hasError('required')) {
+      <mat-error>E-Mail ist erforderlich</mat-error>
+    }
+    @if (objForm.controls['email'].hasError('email')) {
+      <mat-error>Bitte eine gültige E-Mail-Adresse eingeben</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Rolle</mat-label>
+    <input formControlName="role" matInput>
+    <mat-hint>Die Rolle kann nicht selbst geändert werden</mat-hint>
+  </mat-form-field>
+
+  <button [disabled]="!objForm.valid" color="primary" mat-raised-button style="width: 200px" type="submit">
+    Speichern
+  </button>
+</form>

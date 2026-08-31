@@ -1,0 +1,36 @@
+<table [dataSource]="userDataSource" class="user-table" mat-table>
+  <ng-container matColumnDef="name">
+    <th *matHeaderCellDef mat-header-cell>Name</th>
+    <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th *matHeaderCellDef mat-header-cell>E-Mail</th>
+    <td *matCellDef="let element" mat-cell>{{ element.email }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="role">
+    <th *matHeaderCellDef mat-header-cell>Rolle</th>
+    <td *matCellDef="let element" mat-cell>{{ element.role }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="createdAt">
+    <th *matHeaderCellDef mat-header-cell>Erstellt</th>
+    <td *matCellDef="let element" mat-cell>{{ element.createdAt | date:'dd.MM.yyyy' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th *matHeaderCellDef mat-header-cell>Aktionen</th>
+    <td *matCellDef="let element" mat-cell>
+      <button (click)="delete(element)" color="warn" mat-button type="button">
+        <mat-icon>delete</mat-icon>
+        Löschen
+      </button>
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="columns" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: columns;" mat-row></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons></mat-paginator>

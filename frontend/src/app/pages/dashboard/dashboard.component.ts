@@ -1,5 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { AppLoginComponent } from '../../components/app-login/app-login.component';
+import { IsInRoleDirective } from '../../dir/is.in.role.dir';
 import { AppAuthService } from '../../service/app.auth.service';
 import { HeaderService } from '../../service/header.service';
 
@@ -7,7 +11,7 @@ import { HeaderService } from '../../service/header.service';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [AppLoginComponent]
+  imports: [AppLoginComponent, IsInRoleDirective, MatButton, MatIcon, RouterLink]
 })
 export class DashboardComponent implements OnInit {
   private authService = inject(AppAuthService);

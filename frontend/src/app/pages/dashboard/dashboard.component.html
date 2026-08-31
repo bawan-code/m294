@@ -1,11 +1,43 @@
-@if (useralias() !== '') {
-  <div style="font-weight: bold">
-    Willkommen {{ username() }} ({{ useralias() }})!
-  </div>
-}
-
 @if (useralias() === '') {
   <div>
     <app-login></app-login>
+  </div>
+} @else {
+  <div class="dashboard-welcome">
+    Willkommen {{ username() }} ({{ useralias() }})!
+  </div>
+
+  <div class="dashboard-tiles">
+    <button [routerLink]="['jobs']" color="primary" mat-raised-button>
+      <mat-icon>work_outline</mat-icon>
+      Stellen durchsuchen
+    </button>
+
+    <button *appIsInRole="'JOB_SEEKER'" [routerLink]="['my-applications']" color="primary" mat-raised-button>
+      <mat-icon>assignment</mat-icon>
+      Meine Bewerbungen
+    </button>
+    <button *appIsInRole="'JOB_SEEKER'" [routerLink]="['saved-jobs']" color="primary" mat-raised-button>
+      <mat-icon>bookmark</mat-icon>
+      Gemerkte Jobs
+    </button>
+
+    <button *appIsInRole="'EMPLOYER'" [routerLink]="['my-job-postings']" color="primary" mat-raised-button>
+      <mat-icon>business_center</mat-icon>
+      Meine Inserate
+    </button>
+    <button *appIsInRole="'EMPLOYER'" [routerLink]="['job-posting']" color="primary" mat-raised-button>
+      <mat-icon>add</mat-icon>
+      Neue Stelle erfassen
+    </button>
+
+    <button *appIsInRole="'ADMIN'" [routerLink]="['users']" color="primary" mat-raised-button>
+      <mat-icon>group</mat-icon>
+      Benutzerverwaltung
+    </button>
+    <button *appIsInRole="'ADMIN'" [routerLink]="['all-applications']" color="primary" mat-raised-button>
+      <mat-icon>fact_check</mat-icon>
+      Alle Bewerbungen
+    </button>
   </div>
 }

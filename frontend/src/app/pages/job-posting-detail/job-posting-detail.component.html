@@ -1,0 +1,55 @@
+<mat-toolbar>
+  <button (click)="back()" color="primary" mat-raised-button type="button">
+    <mat-icon>arrow_back</mat-icon>
+    Zurück
+  </button>
+</mat-toolbar>
+
+<form (ngSubmit)="save(objForm.value)" [formGroup]="objForm" class="app-form">
+  <mat-form-field>
+    <mat-label>Titel</mat-label>
+    <input #inputTitle appAutofocus formControlName="title" matInput maxlength="100" required>
+    <mat-hint align="end">{{ inputTitle.value.length || 0 }}/100</mat-hint>
+    @if (objForm.controls['title'].hasError('required')) {
+      <mat-error>Titel ist erforderlich</mat-error>
+    }
+    @if (objForm.controls['title'].hasError('minlength')) {
+      <mat-error>Titel muss mindestens 3 Zeichen lang sein</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Beschreibung</mat-label>
+    <textarea #inputDescription cdkAutosizeMaxRows="12" cdkAutosizeMinRows="4" cdkTextareaAutosize
+              formControlName="description" matInput maxlength="2000" required></textarea>
+    <mat-hint align="end">{{ inputDescription.value.length || 0 }}/2000</mat-hint>
+    @if (objForm.controls['description'].hasError('required')) {
+      <mat-error>Beschreibung ist erforderlich</mat-error>
+    }
+    @if (objForm.controls['description'].hasError('minlength')) {
+      <mat-error>Beschreibung muss mindestens 10 Zeichen lang sein</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Ort</mat-label>
+    <input #inputLocation formControlName="location" matInput maxlength="100" required>
+    <mat-hint align="end">{{ inputLocation.value.length || 0 }}/100</mat-hint>
+    @if (objForm.controls['location'].hasError('required')) {
+      <mat-error>Ort ist erforderlich</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Gehaltsspanne</mat-label>
+    <input #inputSalary formControlName="salaryRange" matInput maxlength="50">
+    <mat-hint align="end">optional, z.B. 90000 - 110000 CHF</mat-hint>
+    @if (objForm.controls['salaryRange'].hasError('pattern')) {
+      <mat-error>Format z.B. 90000 - 110000 CHF</mat-error>
+    }
+  </mat-form-field>
+
+  <button [disabled]="!objForm.valid" color="primary" mat-raised-button style="width: 200px" type="submit">
+    Speichern
+  </button>
+</form>

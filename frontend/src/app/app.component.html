@@ -46,6 +46,11 @@
           <mat-icon>group</mat-icon>&nbsp;Benutzer
         </button>
       </div>
+      <div *appIsInRole="'ADMIN'">
+        <button [routerLink]="['all-applications']" color="primary" mat-button>
+          <mat-icon>fact_check</mat-icon>&nbsp;Alle Bewerbungen
+        </button>
+      </div>
 
       <!-- Profil braucht die lokale userId, also nicht für ADMIN. -->
       <div *appIsInRole="'EMPLOYER'">

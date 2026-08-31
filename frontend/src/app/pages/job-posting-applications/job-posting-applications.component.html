@@ -1,0 +1,55 @@
+<mat-toolbar>
+  <button (click)="back()" color="primary" mat-raised-button type="button">
+    <mat-icon>arrow_back</mat-icon>
+    Zurück
+  </button>
+  <span class="toolbar-spacer"></span>
+  <span>{{ jobTitle }}</span>
+</mat-toolbar>
+
+<table [dataSource]="applicationDataSource" class="application-table" mat-table>
+  <ng-container matColumnDef="jobSeekerName">
+    <th *matHeaderCellDef mat-header-cell>Bewerber</th>
+    <td *matCellDef="let element" mat-cell>{{ element.jobSeekerName }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="jobSeekerEmail">
+    <th *matHeaderCellDef mat-header-cell>E-Mail</th>
+    <td *matCellDef="let element" mat-cell>{{ element.jobSeekerEmail }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th *matHeaderCellDef mat-header-cell>Status</th>
+    <td *matCellDef="let element" mat-cell>
+      <app-status-badge [status]="element.status"></app-status-badge>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="appliedAt">
+    <th *matHeaderCellDef mat-header-cell>Beworben am</th>
+    <td *matCellDef="let element" mat-cell>{{ element.appliedAt | date:'dd.MM.yyyy' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th *matHeaderCellDef mat-header-cell>Aktionen</th>
+    <td *matCellDef="let element" mat-cell>
+      @if (element.status === 'PENDING') {
+        <button (click)="accept(element)" color="primary" mat-button type="button">
+          <mat-icon>check</mat-icon>
+          Annehmen
+        </button>
+        <button (click)="reject(element)" color="warn" mat-button type="button">
+          <mat-icon>close</mat-icon>
+          Ablehnen
+        </button>
+      } @else {
+        <span class="no-actions">&mdash;</span>
+      }
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="columns" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: columns;" mat-row></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons></mat-paginator>

@@ -1,0 +1,51 @@
+<table [dataSource]="applicationDataSource" class="application-table" mat-table>
+  <ng-container matColumnDef="jobTitle">
+    <th *matHeaderCellDef mat-header-cell>Stelle</th>
+    <td *matCellDef="let element" mat-cell>{{ element.jobTitle }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="employerName">
+    <th *matHeaderCellDef mat-header-cell>Arbeitgeber</th>
+    <td *matCellDef="let element" mat-cell>{{ element.employerName }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="jobSeekerName">
+    <th *matHeaderCellDef mat-header-cell>Bewerber</th>
+    <td *matCellDef="let element" mat-cell>{{ element.jobSeekerName }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th *matHeaderCellDef mat-header-cell>Status</th>
+    <td *matCellDef="let element" mat-cell>
+      <app-status-badge [status]="element.status"></app-status-badge>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="appliedAt">
+    <th *matHeaderCellDef mat-header-cell>Beworben am</th>
+    <td *matCellDef="let element" mat-cell>{{ element.appliedAt | date:'dd.MM.yyyy' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th *matHeaderCellDef mat-header-cell>Aktionen</th>
+    <td *matCellDef="let element" mat-cell>
+      @if (element.status === 'PENDING') {
+        <button (click)="accept(element)" color="primary" mat-button type="button">
+          <mat-icon>check</mat-icon>
+          Annehmen
+        </button>
+        <button (click)="reject(element)" color="warn" mat-button type="button">
+          <mat-icon>close</mat-icon>
+          Ablehnen
+        </button>
+      } @else {
+        <span class="no-actions">&mdash;</span>
+      }
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="columns" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: columns;" mat-row></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons></mat-paginator>
