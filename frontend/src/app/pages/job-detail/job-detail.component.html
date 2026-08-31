@@ -1,0 +1,43 @@
+<mat-toolbar>
+  <button (click)="back()" color="primary" mat-raised-button type="button">
+    <mat-icon>arrow_back</mat-icon>
+    Zurück
+  </button>
+</mat-toolbar>
+
+<div class="job-detail">
+  <h2>{{ jobPosting().title }}</h2>
+
+  <div class="job-detail-meta">
+    <span>{{ jobPosting().location }}</span>
+    @if (jobPosting().salaryRange) {
+      <span>&nbsp;&middot; {{ jobPosting().salaryRange }}</span>
+    }
+  </div>
+
+  <div class="job-detail-meta">
+    Arbeitgeber: {{ jobPosting().employerName }}
+  </div>
+
+  <div class="job-detail-meta">
+    Erstellt am {{ jobPosting().createdAt | date:'dd.MM.yyyy' }}
+  </div>
+
+  <h3>Beschreibung</h3>
+  <p class="job-detail-description">{{ jobPosting().description }}</p>
+
+  <!--
+    Rollenabhängige Aktionsleiste: dieselbe öffentliche Route zeigt je nach
+    Rolle unterschiedliche Aktionen. Anonyme Besucher sehen nur die Daten.
+  -->
+  <div class="job-detail-actions">
+    <button *appIsInRole="'JOB_SEEKER'" (click)="apply()" color="primary" mat-raised-button type="button">
+      <mat-icon>send</mat-icon>
+      Jetzt bewerben
+    </button>
+    <button *appIsInRole="'JOB_SEEKER'" (click)="saveJob()" color="primary" mat-button type="button">
+      <mat-icon>bookmark_border</mat-icon>
+      Job merken
+    </button>
+  </div>
+</div>

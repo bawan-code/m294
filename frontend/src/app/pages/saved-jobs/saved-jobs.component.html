@@ -1,0 +1,45 @@
+<table [dataSource]="savedJobDataSource" class="saved-job-table" mat-table>
+  <ng-container matColumnDef="jobTitle">
+    <th *matHeaderCellDef mat-header-cell>Stelle</th>
+    <td *matCellDef="let element" mat-cell>{{ element.jobTitle }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="jobLocation">
+    <th *matHeaderCellDef mat-header-cell>Ort</th>
+    <td *matCellDef="let element" mat-cell>{{ element.jobLocation }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="salaryRange">
+    <th *matHeaderCellDef mat-header-cell>Gehalt</th>
+    <td *matCellDef="let element" mat-cell>{{ element.salaryRange }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="employerName">
+    <th *matHeaderCellDef mat-header-cell>Arbeitgeber</th>
+    <td *matCellDef="let element" mat-cell>{{ element.employerName }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="savedAt">
+    <th *matHeaderCellDef mat-header-cell>Gemerkt am</th>
+    <td *matCellDef="let element" mat-cell>{{ element.savedAt | date:'dd.MM.yyyy' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th *matHeaderCellDef mat-header-cell>Aktionen</th>
+    <td *matCellDef="let element" mat-cell>
+      <button (click)="toJob(element)" color="primary" mat-button type="button">
+        <mat-icon>visibility</mat-icon>
+        Zum Job
+      </button>
+      <button (click)="remove(element)" color="warn" mat-button type="button">
+        <mat-icon>delete</mat-icon>
+        Entfernen
+      </button>
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="columns" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: columns;" mat-row></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons></mat-paginator>

@@ -1,0 +1,48 @@
+<mat-toolbar>
+  <span class="toolbar-spacer"></span>
+  <button *appIsInRole="'EMPLOYER'" (click)="add()" color="primary" mat-raised-button type="button">
+    <mat-icon>add</mat-icon>
+    Neue Stelle erfassen
+  </button>
+</mat-toolbar>
+
+<table [dataSource]="jobDataSource" class="job-table" mat-table>
+  <ng-container matColumnDef="title">
+    <th *matHeaderCellDef mat-header-cell>Titel</th>
+    <td *matCellDef="let element" mat-cell>{{ element.title }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="location">
+    <th *matHeaderCellDef mat-header-cell>Ort</th>
+    <td *matCellDef="let element" mat-cell>{{ element.location }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="salaryRange">
+    <th *matHeaderCellDef mat-header-cell>Gehalt</th>
+    <td *matCellDef="let element" mat-cell>{{ element.salaryRange }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="employerName">
+    <th *matHeaderCellDef mat-header-cell>Arbeitgeber</th>
+    <td *matCellDef="let element" mat-cell>{{ element.employerName }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th *matHeaderCellDef mat-header-cell>Aktionen</th>
+    <td *matCellDef="let element" mat-cell>
+      <button (click)="details(element)" color="primary" mat-button type="button">
+        <mat-icon>visibility</mat-icon>
+        Details
+      </button>
+      <button *appIsInRole="'JOB_SEEKER'" (click)="saveJob(element)" color="primary" mat-button type="button">
+        <mat-icon>bookmark_border</mat-icon>
+        Merken
+      </button>
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="columns" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: columns;" mat-row></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10]" [pageSize]="10" showFirstLastButtons></mat-paginator>

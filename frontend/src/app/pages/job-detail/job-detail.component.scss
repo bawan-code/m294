@@ -1,0 +1,19 @@
+.job-detail {
+  margin-top: 20px;
+  max-width: 700px;
+}
+
+.job-detail-meta {
+  color: rgba(0, 0, 0, .6);
+  margin-bottom: 4px;
+}
+
+.job-detail-description {
+  white-space: pre-wrap;
+}
+
+.job-detail-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+}
