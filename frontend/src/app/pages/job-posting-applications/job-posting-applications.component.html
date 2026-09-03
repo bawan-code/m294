@@ -1,10 +1,10 @@
-<mat-toolbar>
+<mat-toolbar style="padding: 0;">
   <button (click)="back()" color="primary" mat-raised-button type="button">
     <mat-icon>arrow_back</mat-icon>
     Zurück
   </button>
-  <span class="toolbar-spacer"></span>
-  <span>{{ jobTitle }}</span>
+  <!-- <span class="toolbar-spacer"></span> -->
+  <span style="padding-left: 16px">{{ jobTitle }}</span>
 </mat-toolbar>
 
 <table [dataSource]="applicationDataSource" class="application-table" mat-table>
