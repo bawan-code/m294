@@ -1,6 +1,7 @@
 package ch.mahmud.bawan.job_marketplace.config;
 
 import ch.mahmud.bawan.job_marketplace.security.JwtAuthConverter;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -47,6 +48,13 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+                        // Wirft ein Controller eine Exception, leitet Spring intern auf /error
+                        // weiter. Dieser Forward durchläuft die Filterkette erneut und fiele
+                        // sonst auf anyRequest().authenticated() — bei anonymen Aufrufern
+                        // würde daraus eine 401, die den echten Statuscode (z.B. 409 bei der
+                        // Registrierung) überschreibt.
+                        .dispatcherTypeMatchers(DispatcherType.ERROR, DispatcherType.FORWARD).permitAll()
+
                         // Swagger / OpenAPI
                         .requestMatchers(AUTH_WHITELIST).permitAll()
 

@@ -1,7 +1,11 @@
 <div>Bitte melden Sie sich an, um die Anwendung zu nutzen.</div>
-<div style="margin-top: 20px">
+<div style="margin-top: 20px; display: flex; gap: 10px;">
   <button (click)="login()" color="primary" mat-raised-button type="button">
     <mat-icon>login</mat-icon>
     Anmelden
+  </button>
+  <button [routerLink]="['/register']" color="primary" mat-button type="button">
+    <mat-icon>person_add</mat-icon>
+    Registrieren
   </button>
 </div>

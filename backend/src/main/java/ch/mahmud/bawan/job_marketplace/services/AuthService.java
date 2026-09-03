@@ -14,12 +14,14 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -76,7 +78,16 @@ public class AuthService {
                 .create(keycloakUser);
 
         if (response.getStatus() != 201) {
-            throw new RuntimeException("Could not create user in Keycloak. Status: " + response.getStatus());
+            // 409 bedeutet, dass der Benutzer in Keycloak schon existiert — etwa wenn er
+            // dort angelegt wurde, ohne dass ein lokaler Datensatz entstanden ist.
+            if (response.getStatus() == 409) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "A user with this email already exists");
+            }
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Could not create user in Keycloak. Status: " + response.getStatus());
         }
 
         String keycloakId = CreatedResponseUtil.getCreatedId(response);
@@ -102,27 +113,30 @@ public class AuthService {
 
     private void validateRegisterRequest(UserRegisterRequestDto request) {
         if (request.getName() == null || request.getName().isBlank()) {
-            throw new RuntimeException("Name is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
         }
 
         if (request.getEmail() == null || request.getEmail().isBlank()) {
-            throw new RuntimeException("Email is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
         }
 
         if (request.getPassword() == null || request.getPassword().isBlank()) {
-            throw new RuntimeException("Password is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
         }
 
         if (request.getRole() == null) {
-            throw new RuntimeException("Role is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role is required");
         }
 
+        // Administratoren werden ausschliesslich direkt in Keycloak angelegt.
         if (request.getRole() == Role.ADMIN) {
-            throw new RuntimeException("Users are not allowed to register as ADMIN");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Users are not allowed to register as ADMIN");
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("A user with this email already exists");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "A user with this email already exists");
         }
     }
 
@@ -142,11 +156,11 @@ public class AuthService {
 
     public LoginResponseDto login(UserLoginRequestDto request) {
         if (request.getEmail() == null || request.getEmail().isBlank()) {
-            throw new RuntimeException("Email is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
         }
 
         if (request.getPassword() == null || request.getPassword().isBlank()) {
-            throw new RuntimeException("Password is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
         }
 
         String tokenUrl = keycloakServerUrl
@@ -170,7 +184,7 @@ public class AuthService {
                     .body(LoginResponseDto.class);
 
         } catch (HttpClientErrorException exception) {
-            throw new RuntimeException("Login failed: " + exception.getResponseBodyAsString());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed");
         }
     }
 

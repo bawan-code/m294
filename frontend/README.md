@@ -52,6 +52,7 @@ und benutzerbezogene Seiten stehen ihnen nicht offen.
 | `/`, `/dashboard` | Dashboard | alle, Kacheln rollenabhängig |
 | `/jobs` | Stellenliste | öffentlich |
 | `/jobs/:id` | Stellendetail | öffentlich, Aktionen rollenabhängig |
+| `/register` | Registrierung | öffentlich |
 | `/my-job-postings` | Meine Inserate | EMPLOYER |
 | `/job-posting`, `/job-posting/:id` | Inserat erfassen/bearbeiten | EMPLOYER |
 | `/job-postings/:id/applications` | Bewerbungen auf ein Inserat | EMPLOYER |
@@ -90,6 +91,7 @@ src/app/
 | `JobApplicationService` | `/api/job-applications` | getList, getOne, save, updateStatus, delete, getListByUser, getListByJob |
 | `SavedJobService` | `/api/saved-jobs` | getList, getOne, save, delete, getListByUser |
 | `UserService` | `/api/users` | getList, getOne, getMe, update, delete |
+| `RegistrationService` | `/api/auth/register` | register — kein CRUD, deshalb kein `save()` |
 
 Dazu `CurrentUserService`: Er lädt über `GET /api/users/me` die lokale `userId`, die alle
 benutzerbezogenen Endpoints benötigen — im Token steht nur die Keycloak-UUID.
@@ -100,6 +102,7 @@ Vitest über `@angular/build:unit-test`, konfiguriert in `vitest.config.ts`.
 
 - `service/job-posting.service.spec.ts` — alle Methoden des CRUD-Services
 - `pages/job-list/job-list.component.spec.ts` — alle Methoden der Komponente
+- `service/registration.service.spec.ts` — Erfolgsfall plus 409 und 400
 - `components/app-header/app-header.component.spec.ts` — Smoke-Test
 
 ## Bewusste Abweichungen vom Demoprojekt

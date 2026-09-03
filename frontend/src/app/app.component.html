@@ -64,6 +64,14 @@
         </button>
       </div>
 
+      @if (useralias() === '') {
+        <div>
+          <button [routerLink]="['register']" color="primary" mat-button>
+            <mat-icon>person_add</mat-icon>&nbsp;Registrieren
+          </button>
+        </div>
+      }
+
       @if (useralias() !== '') {
         <div style="margin-top: 50px">
           <button (click)="logout()" color="warn" mat-button type="button">

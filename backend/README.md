@@ -54,6 +54,35 @@ Daraus folgt:
   `PATCH /api/job-applications/{id}/status`.
 - Benutzerbezogene Endpoints (`/api/users/{userId}/...`) sind für ADMIN gegenstandslos.
 
+### Registrierung
+
+`POST /api/auth/register` ist öffentlich und legt den Benutzer in Keycloak **und** in der
+lokalen Datenbank an, inklusive Zuweisung der Realm-Rolle. Statuscodes:
+
+| Fall | Status |
+| --- | --- |
+| Erfolg | `201 Created` mit `UserResponseDto` |
+| Name / E-Mail / Passwort / Rolle fehlt | `400 Bad Request` |
+| Rolle `ADMIN` angefragt | `400 Bad Request` |
+| E-Mail bereits vergeben (lokal oder in Keycloak) | `409 Conflict` |
+| Keycloak nicht erreichbar oder anderer Fehler | `502 Bad Gateway` |
+
+Keycloak selbst hat `registrationAllowed: false` — dieser Endpoint ist der einzige Weg zu
+einem neuen Konto. Es gibt keine `passwordPolicy` im Realm, die Passwortregeln liegen also
+im Frontend-Formular.
+
+### Fehler-Dispatch in der Security-Konfiguration
+
+`SecurityConfig` erlaubt `DispatcherType.ERROR` ausdrücklich. Ohne diese Zeile passiert
+Folgendes: Wirft ein Controller eine Exception, leitet Spring intern auf `/error` weiter,
+dieser Forward durchläuft die Filterkette erneut und fällt auf `anyRequest().authenticated()`.
+Bei einem **anonymen** Aufrufer wird daraus eine `401` mit `WWW-Authenticate: Bearer`, die den
+echten Statuscode überschreibt — aus einem `409` wird ein `401`.
+
+Angemeldete Benutzer sind davon nicht betroffen, weil ihr Error-Dispatch authentifiziert ist.
+Der Fehler fällt deshalb nur bei öffentlichen Endpoints auf, praktisch also nur bei der
+Registrierung.
+
 ### CSRF
 
 CSRF ist aktiv (`CookieCsrfTokenRepository.withHttpOnlyFalse()`). Der erste GET setzt ein

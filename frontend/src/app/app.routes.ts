@@ -11,6 +11,7 @@ import { MyApplicationsComponent } from './pages/my-applications/my-applications
 import { MyJobPostingsComponent } from './pages/my-job-postings/my-job-postings.component';
 import { NoAccessComponent } from './pages/no-access/no-access.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { RegisterComponent } from './pages/register/register.component';
 import { SavedJobsComponent } from './pages/saved-jobs/saved-jobs.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 
@@ -66,6 +67,9 @@ export const routes: Routes = [
     path: 'all-applications', component: AllApplicationsComponent, canActivate: [appCanActivate],
     data: { roles: [AppRoles.Admin] }
   },
+
+  // Öffentlich und bewusst ohne Guard — wer sich registriert, ist noch nicht angemeldet.
+  { path: 'register', component: RegisterComponent },
 
   { path: 'noaccess', component: NoAccessComponent },
   { path: '**', redirectTo: '' },
