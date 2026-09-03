@@ -1,59 +1,125 @@
-# Frontend
+# Job Marketplace — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.11.
+Angular-Frontend zur Job-Marketplace-API aus Modul 295. Projektarbeit Modul 294.
 
-## Development server
+## Voraussetzungen
 
-To start a local development server, run:
+| Dienst | Port | Hinweis |
+| --- | --- | --- |
+| Frontend | 4200 | dieses Projekt |
+| Backend | 9090 | `backend/`, mit `./mvnw spring-boot:run` starten |
+| Keycloak | 8080 | Realm `job-marketplace` aus `backend/realm-export.json` |
+| PostgreSQL | 5432 | Datenbank `JobMarketplace` |
 
-```bash
-ng serve
-```
+Node 24 wird vorausgesetzt.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+In Keycloak muss der public Client `job-marketplace-frontend` existieren (Redirect-URI
+`http://localhost:4200/*`). Die Details stehen in `backend/README.md`.
 
-## Code scaffolding
+Bei abweichenden Ports müssen sowohl `SecurityConfig` im Backend als auch die
+Client-Einstellungen in Keycloak angepasst werden.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Befehle
 
 ```bash
-ng build
+npm install
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
 
 ```bash
-ng test
+npm start
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
 
 ```bash
-ng e2e
+npm test
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+```bash
+npm run lint
+```
 
-## Additional Resources
+Testdaten für die Datenbank liegen in `backend/dummy-data.sql`.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Testbenutzer
+
+Die Zugangsdaten stehen in `backend/README.md`. Administratoren existieren nur in Keycloak
+und haben bewusst keinen Datensatz in der Datenbank — für sie liefert `/api/users/me` ein 404,
+und benutzerbezogene Seiten stehen ihnen nicht offen.
+
+## Routen und Rollen
+
+| Pfad | Komponente | Rollen |
+| --- | --- | --- |
+| `/`, `/dashboard` | Dashboard | alle, Kacheln rollenabhängig |
+| `/jobs` | Stellenliste | öffentlich |
+| `/jobs/:id` | Stellendetail | öffentlich, Aktionen rollenabhängig |
+| `/my-job-postings` | Meine Inserate | EMPLOYER |
+| `/job-posting`, `/job-posting/:id` | Inserat erfassen/bearbeiten | EMPLOYER |
+| `/job-postings/:id/applications` | Bewerbungen auf ein Inserat | EMPLOYER |
+| `/my-applications` | Meine Bewerbungen | JOB_SEEKER |
+| `/saved-jobs` | Gemerkte Jobs | JOB_SEEKER |
+| `/profile` | Mein Profil | EMPLOYER, JOB_SEEKER |
+| `/users` | Benutzerverwaltung | ADMIN |
+| `/all-applications` | Alle Bewerbungen | ADMIN |
+| `/noaccess` | Kein Zugriff | alle |
+
+Der Schutz ist zweistufig: `appCanActivate` an der Route mit `data: { roles: [...] }`,
+und `*appIsInRole` für einzelne Teile einer Seite.
+
+**Rollenabhängige Seitenteile** zeigt am deutlichsten `/jobs/:id`: dieselbe öffentliche Route
+blendet für JOB_SEEKER „Jetzt bewerben" und „Job merken" ein, für EMPLOYER „Bearbeiten",
+„Bewerbungen ansehen" und „Löschen", und für anonyme Besucher keine Aktion.
+
+## Projektstruktur
+
+```
+src/app/
+  components/     Header, Login, Confirm-Dialog, Status-Badge, Base
+  pages/          über das Routing angesteuerte Seiten
+  dataaccess/     Modellklassen zu den Backend-DTOs
+  service/        ein Service pro Ressource
+  guard/          Route-Guard mit Rollenprüfung
+  dir/            Struktur-Direktiven für rollenabhängige Sichtbarkeit
+  interceptor/    XSRF-Interceptor
+```
+
+## Services
+
+| Service | Endpoints | Methoden |
+| --- | --- | --- |
+| `JobPostingService` | `/api/job-postings` | **voller CRUD**: getList, getOne, save, update, delete, getListByUser |
+| `JobApplicationService` | `/api/job-applications` | getList, getOne, save, updateStatus, delete, getListByUser, getListByJob |
+| `SavedJobService` | `/api/saved-jobs` | getList, getOne, save, delete, getListByUser |
+| `UserService` | `/api/users` | getList, getOne, getMe, update, delete |
+
+Dazu `CurrentUserService`: Er lädt über `GET /api/users/me` die lokale `userId`, die alle
+benutzerbezogenen Endpoints benötigen — im Token steht nur die Keycloak-UUID.
+
+## Tests
+
+Vitest über `@angular/build:unit-test`, konfiguriert in `vitest.config.ts`.
+
+- `service/job-posting.service.spec.ts` — alle Methoden des CRUD-Services
+- `pages/job-list/job-list.component.spec.ts` — alle Methoden der Komponente
+- `components/app-header/app-header.component.spec.ts` — Smoke-Test
+
+## Bewusste Abweichungen vom Demoprojekt
+
+**Keine Mehrsprachigkeit.** Texte stehen als deutsche Literale in den Templates statt über
+`@ngx-translate`. `BaseComponent` wurde übernommen, hält die Meldungen aber als feste Strings.
+
+**Reaktive Validierung.** Das Demoprojekt validiert nur über Template-Attribute
+(`required`, `maxlength`). Hier kommen `Validators` und `mat-error` dazu, damit
+Validierungsfehler sichtbar werden. Die FormGroup wird deshalb einmalig deklariert und beim
+Laden per `patchValue` befüllt — ein `formBuilder.group(obj)` würde die Validatoren verlieren.
+
+**Rollen aus dem Realm-Claim.** `AppAuthService.getRoles()` liest `realm_access.roles`, nicht
+`resource_access.<client>.roles` wie das Demoprojekt. Dieses Backend vergibt Realm-Rollen.
+Die Rollen laufen über ein `BehaviorSubject`, damit Guard und Direktiven sie auch dann
+erhalten, wenn das Token erst nach ihrer Initialisierung eintrifft.
+
+**Löschen prüft auch 204.** Das Backend antwortet auf DELETE mit `204 No Content`, das
+Demoprojekt prüft nur auf `200`. Ohne die Ergänzung meldet jedes erfolgreiche Löschen einen
+Fehler.
+
+**ESLint als Flat Config.** Gleicher Regelsatz wie das Demoprojekt, aber in
+`eslint.config.js` — ESLint 9 lädt das eslintrc-Format nicht mehr ohne Zusatzschalter.
