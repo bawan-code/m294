@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/JobMarketplace
     username: postgres
-    password: XrosBBZBL07
+    password: HIER_PASSWORT_EINFÜGEN
     driverClassName: org.postgresql.Driver
   security:
     oauth2:
@@ -19,9 +19,9 @@ keycloak:
   server-url: http://localhost:8080
   realm: job-marketplace
   admin-client-id: job-marketplace-admin
-  admin-client-secret: geU6al0TDXLbAxwGRzsdlwRX56uu3r8S
+  admin-client-secret: HIER_SECRET_EINFÜGEN
   login-client-id: job-marketplace-api
-  login-client-secret: buY9EAGEXwCkClBirtvrFzD4YxyRoOXk
+  login-client-secret: HIER_SECRET_EINFÜGEN
 logging:
   level:
     org.springframework.security: DEBUG
